@@ -23,15 +23,35 @@ public class ProdutosDAO {
             prep.execute();
             return true;
         }catch(SQLException e){
-            //System.out.println("Erro ao inserir produto: " + e.getMessage());
+            System.out.println("Erro ao inserir produto: " + e.getMessage());
             return false;
         }
         
     }
     
     public ArrayList<ProdutosDTO> listarProdutos(){
-        
-        return listagem;
+        String sql = "SELECT * FROM produtos";
+
+        try {
+            conn = new conectaDAO().connectDB();
+            PreparedStatement stmt = this.conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();            
+
+            while (rs.next()) { 
+                ProdutosDTO produtoDTO = new ProdutosDTO();
+                produtoDTO.setId(rs.getInt("id"));
+                produtoDTO.setNome(rs.getString("nome"));
+                produtoDTO.setStatus(rs.getString("status"));
+                produtoDTO.setValor(rs.getInt("valor"));
+                
+                listagem.add(produtoDTO);
+            }
+            return listagem;
+                    
+        } catch (SQLException e) {
+            System.out.println("Erro ao Listar produtos");
+            return null;
+        }
     }
     
     
