@@ -1,12 +1,12 @@
 
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-
 /**
  *
  * @author Adm
@@ -136,16 +136,27 @@ public class listagemVIEW extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnVenderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVenderActionPerformed
-        String id = id_produto_venda.getText();
+        String input = id_produto_venda.getText();
+        try {
+            // Convertendo o valor para inteiro
+            int id = Integer.parseInt(input);
+            ProdutosDTO produtosDTO = new ProdutosDTO();
+            produtosDTO.setId(id);
+            ProdutosDAO produtosdao = new ProdutosDAO();
+            
+            produtosdao.venderProduto(produtosDTO);
+            listarProdutos();
+            id_produto_venda.setText("");
+
+        } catch (NumberFormatException ex) {
+            // Tratando entrada inválida
+            JOptionPane.showMessageDialog(this, "Informe um número válido", "Número inválido", JOptionPane.ERROR_MESSAGE);
+        }
         
-        ProdutosDAO produtosdao = new ProdutosDAO();
-        
-        //produtosdao.venderProduto(Integer.parseInt(id));
-        listarProdutos();
     }//GEN-LAST:event_btnVenderActionPerformed
 
     private void btnVendasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVendasActionPerformed
-        listagemVendidosVIEW vendas = new listagemVendidosVIEW(); 
+        listagemVendidosVIEW vendas = new listagemVendidosVIEW();
         vendas.setVisible(true);
     }//GEN-LAST:event_btnVendasActionPerformed
 
@@ -201,16 +212,16 @@ public class listagemVIEW extends javax.swing.JFrame {
     private javax.swing.JTable listaProdutos;
     // End of variables declaration//GEN-END:variables
 
-    private void listarProdutos(){
+    private void listarProdutos() {
         try {
             ProdutosDAO produtosdao = new ProdutosDAO();
-            
+
             DefaultTableModel model = (DefaultTableModel) listaProdutos.getModel();
             model.setNumRows(0);
-            
+
             ArrayList<ProdutosDTO> listagem = produtosdao.listarProdutos();
-            
-            for(int i = 0; i < listagem.size(); i++){
+
+            for (int i = 0; i < listagem.size(); i++) {
                 model.addRow(new Object[]{
                     listagem.get(i).getId(),
                     listagem.get(i).getNome(),
@@ -221,6 +232,6 @@ public class listagemVIEW extends javax.swing.JFrame {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-    
+
     }
 }
